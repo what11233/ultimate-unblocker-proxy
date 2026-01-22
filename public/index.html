@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Unblocker - Access Blocked Websites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #eee;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(51, 51, 51, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 255, 0, 0.1);
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+            border: 2px solid rgba(0, 255, 0, 0.3);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #00ff00;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.95em;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #555;
+            border-radius: 8px;
+            background: #444;
+            color: #fff;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+            background: #555;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00ff00, #00cc00);
+            color: #222;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 0, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 0, 0.5);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .disclaimer {
+            background: rgba(244, 67, 54, 0.1);
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 0.85em;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: 75vh;
+            display: none;
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .iframe-header {
+            background: #333;
+            padding: 15px;
+            border-bottom: 2px solid #00ff00;
+            color: #00ff00;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .iframe-header span {
+            word-break: break-all;
+        }
+
+        .close-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .close-btn:hover {
+            background: #d32f2f;
+        }
+
+        iframe {
+            width: 100%;
+            height: calc(100% - 50px);
+            border: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #ff9800;
+            font-size: 1.1em;
+            margin-top: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🟢 Ultimate Unblocker</h1>
+        <p class="subtitle">Access restricted websites through our secure proxy</p>
+
+        <div class="input-group">
+            <label for="urlInput">Enter Website URL:</label>
+            <input 
+                type="text" 
+                id="urlInput" 
+                placeholder="e.g., google.com or https://www.example.com"
+                onkeypress="if(event.key==='Enter') unblock()"
+            >
+        </div>
+
+        <button onclick="unblock()">🚀 Unblock Website</button>
+
+        <div class="disclaimer">
+            <strong>⚠️ Disclaimer:</strong> This tool is for educational purposes only. 
+            Use responsibly and ethically. You are responsible for complying with all 
+            applicable laws and website terms of service. We are not liable for misuse.
+        </div>
+    </div>
+
+    <div id="iframeContainer" class="iframe-container">
+        <div class="iframe-header">
+            <span id="currentUrl">Loading...</span>
+            <button class="close-btn" onclick="closeFrame()">Close</button>
+        </div>
+        <iframe id="proxyFrame"></iframe>
+    </div>
+
+    <div id="loadingIndicator" class="loading">
+        ⏳ Loading... This may take a few seconds
+    </div>
+
+    <script>
+        const urlInput = document.getElementById('urlInput');
+        const iframeContainer = document.getElementById('iframeContainer');
+        const proxyFrame = document.getElementById('proxyFrame');
+        const currentUrlDisplay = document.getElementById('currentUrl');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        function unblock() {
+            let url = urlInput.value.trim();
+
+            if (!url) {
+                alert("⚠️ Please enter a website URL");
+                return;
+            }
+
+            // Add https:// if no protocol
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+
+            try {
+                // Validate URL
+                new URL(url);
+            } catch (e) {
+                alert("❌ Invalid URL format");
+                return;
+            }
+
+            // Show iframe and loading
+            iframeContainer.style.display = 'block';
+            loadingIndicator.classList.add('active');
+            currentUrlDisplay.textContent = url;
+
+            // Set iframe to load through the proxy
+            proxyFrame.src = `/proxy?url=${encodeURIComponent(url)}`;
+        }
+
+        function closeFrame() {
+            iframeContainer.style.display = 'none';
+            proxyFrame.src = '';
+            loadingIndicator.classList.remove('active');
+            urlInput.value = '';
+        }
+
+        // Remove loading indicator when iframe loads
+        proxyFrame.onload = () => {
+            loadingIndicator.classList.remove('active');
+        };
+
+        proxyFrame.onerror = () => {
+            loadingIndicator.classList.remove('active');
+            alert("❌ Failed to load the page. The website may be blocking this proxy.");
+        };
+    </script>
+
+</body>
+</html>
